@@ -20,3 +20,11 @@ Answer briefly, in your own words. This is graded on reasoning, not length.
    one where the graph is overkill.
 
 _Write your answers below._
+
+1. The most silent failure is the trace-to-dataset curation step, especially mapping root-span `user_input` and `agent_output` into eval rows and preference pairs. The pipeline may still run, but the generated datasets would be wrong or incomplete. I would detect it with row-count checks, per-status distributions, and sampled records that compare raw traces against final JSONL outputs.
+
+2. If I skip decontamination, I would train on prompts that also appear in the eval set. Then the model could memorize those answers, so eval would look better than real performance. The lie would show up as unusually high offline eval scores while production quality, generalization, or failure rate does not improve accordingly.
+
+3. In an e-commerce system, `lifetime_spend` or `total_orders` is dangerous without a point-in-time guard. If I join the latest value instead of the value known at event time, the model sees future purchases during training and gets unrealistic accuracy.
+
+4. The graph answers multi-hop questions well, such as "Where does a widget ship from?" because it can connect `widget -> accessory -> hanoi fulfillment center`. Flat chunk retrieval struggles when the facts are split across chunks. The graph is overkill for a direct fact like "What is the gadget warranty?"
